@@ -21,12 +21,12 @@ int main()
 {
 	int n, m;
 	int cmd, a, b;
-	scanf_s("%d %d", &n, &m);
+	scanf("%d %d", &n, &m);
 	vector<int> union_set;
 	for (int i = 0; i <= n; ++i) union_set.emplace_back(i);
 	for (int i = 0; i < m; ++i)
 	{
-		scanf_s("%d %d %d", &cmd, &a,&b);
+		scanf("%d %d %d", &cmd, &a,&b);
 		switch (cmd)
 		{
 		case 0:
