@@ -1,58 +1,81 @@
 #include <iostream>
-#include <queue>
 #include <vector>
-
+#include <map>
+#include <algorithm>
 using namespace std;
-
-class Problem
+class Team
 {
 public:
 	int num;
-	int value = 0;
-	vector<Problem*> next_vec;
-	Problem(int n) : num(n) {}
-	void addNext(Problem* next) { next_vec.emplace_back(next);}
+	int cnt = 0;
+	Team(int n) :num(n) {}
 };
 
-bool compare(Problem* p1, Problem* p2)
+bool compare(Team* t1, Team* t2)
 {
-	if (p1->value == p2->value)
-		return p1->num < p2->num;
-	return p1->value < p2->value;
+	return t1->cnt > t2->cnt;
 }
-
 int main()
 {
-	int n, m;
-	cin >> n >> m;
-	vector<Problem*> prob_vec;
-	priority_queue<int, vector<int>, greater<int>> next_q;
-	for (int i = 0; i < n; ++i) prob_vec.emplace_back(new Problem(i));
-
-	for (int i = 0; i < m; ++i)
+	int testCnt;
+	cin >> testCnt;
+	while (testCnt > 0)
 	{
-		int a, b;
-		cin >> a >> b;
-		prob_vec[--a]->addNext(prob_vec[--b]);
-		prob_vec[b]->value += 1;
-	}
-	
-	for (auto& prob : prob_vec)
-	{
-		if (prob->value != 0) continue;
-		next_q.push(prob->num);
-	}
-
-	while (!next_q.empty())
-	{
-		Problem* cur = prob_vec[next_q.top()];
-		next_q.pop();
-		for (auto& prob : cur->next_vec)
+		map<int, int> index_map;
+		vector<Team*> team_vec;
+		testCnt -= 1;
+		int n, m;
+		cin >> n;
+		for (int i = 0; i < n; ++i)
 		{
-			prob->value -= 1;
-			if (prob->value == 0) next_q.push(prob->num);
+			int a;
+			cin >> a;
+			team_vec.emplace_back(new Team(a));
+			index_map[a] = i;
+			for (auto& team : team_vec) team->cnt++;
 		}
-		cout << cur->num+1 <<" ";
-	}
+		cin >> m;
+		for (int i = 0; i < m; ++i)
+		{
+			int a, b;
+			cin >> a >> b;
+			int a_num = index_map[a];
+			int b_num = index_map[b];
+			Team* a_team = team_vec[a_num];
+			Team* b_team = team_vec[b_num];
+			if (a_num < b_num)
+			{
+				a_team->cnt -= 1;
+				b_team->cnt += 1;
+			}
+			else
+			{
+				a_team->cnt += 1;
+				b_team->cnt -= 1;
+			}
+		}
+		
+		sort(team_vec.begin(), team_vec.end(), compare);
 
+		vector<int> rank_vec;
+		int save = -1;
+		bool bStable = true;
+		for (auto& team : team_vec)
+		{
+			if (save == team->cnt)
+			{
+				bStable = false;
+				break;
+			}
+			save = team->cnt;
+			rank_vec.emplace_back(team->num);
+		}
+		if (bStable)
+		{
+			for (int r : rank_vec) cout << r << " ";
+		}
+		else cout << "IMPOSSIBLE";
+
+		cout << "\n";
+	}
 }
