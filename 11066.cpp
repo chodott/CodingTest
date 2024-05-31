@@ -6,6 +6,8 @@ using namespace std;
 //비용 - 파일의 합
 int main()
 {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
 	int t;
 	cin >> t;
 	int dp[501][501];
@@ -14,8 +16,8 @@ int main()
 	{
 		int k;
 		cin >> k;
-		fill(&dp[0][0], &dp[500][501], 0);
-		fill(&sum[0], &sum[501], 0);
+		fill(&dp[0][0], &dp[500][k+1], 0);
+		fill(&sum[0], &sum[k+1], 0);
 
 		for (int i = 1; i <= k; ++i)
 		{
@@ -32,8 +34,7 @@ int main()
 				for (int l = j; l< j +i; ++l)
 				{
 					dp[j][j + i] = min(dp[j][j + i], 
-												dp[j][l] + dp[l + 1][j + i]+ sum[j+i] - sum[j-1]);
-					
+												dp[j][l] + dp[l + 1][j + i]+ sum[j+i] - sum[j-1]);		
 				}
 			}
 		}
