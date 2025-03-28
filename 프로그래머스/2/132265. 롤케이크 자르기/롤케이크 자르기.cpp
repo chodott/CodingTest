@@ -12,20 +12,16 @@ int solution(vector<int> topping) {
     
     for(int value : topping) 
     {
-        if(rightMap.find(value) == rightMap.end()) rightMap[value] = 1;
-        else rightMap[value]++;
+        rightMap[value]++;
     }
     
     for(int value : topping)
     {
-        if(leftMap.find(value) == leftMap.end()) leftMap[value] = 1;
-        else leftMap[value]++;
+        leftMap[value]++;
+        rightMap[value]--; 
         
-        if(rightMap.find(value) != rightMap.end()) 
-        {
-            rightMap[value]--; 
-            if(rightMap[value] == 0) rightMap.erase(value);
-        }
+        if(rightMap[value] == 0) rightMap.erase(value);
+        
         if(leftMap.size() == rightMap.size()) answer++;
     }
     
