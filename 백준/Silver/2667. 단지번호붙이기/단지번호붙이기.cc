@@ -4,58 +4,72 @@
 #include <algorithm>
 using namespace std;
 
-void bfs(vector<vector<char>>& map_vec, vector<int>& answer_vec,  int i, int j)
+int BFS(char map[][25], int i, int j, int max)
 {
-	queue<pair<int, int>> next_q;
-	next_q.push(make_pair(i, j));
+	queue<pair<int, int>> q;
 	int count = 0;
-	while (!next_q.empty())
+	q.push(make_pair(i, j));
+	while (!q.empty())
 	{
-		auto pos = next_q.front();
-		next_q.pop();
-		int y = pos.first; int x = pos.second;
-		if (y < 0 || y >= map_vec.size() || x < 0 || x >= map_vec.size())
+		auto pos = q.front();
+		int y = pos.first;
+		int x = pos.second;
+		q.pop();
+
+
+		if (x < 0 || x >= max || y < 0 || y >= max)
 		{
 			continue;
 		}
-		if (map_vec[y][x] == '0')
+
+		if (map[y][x] != '1')
 		{
 			continue;
 		}
+
+		q.push(make_pair(y + 1, x));
+		q.push(make_pair(y - 1, x));
+		q.push(make_pair(y, x + 1));
+		q.push(make_pair(y, x - 1));
 		count++;
-		next_q.push(make_pair(y + 1, x));
-		next_q.push(make_pair(y - 1, x));
-		next_q.push(make_pair(y, x-1));
-		next_q.push(make_pair(y, x+1));
-		map_vec[y][x] = '0';
+		map[y][x] = '0';
 	}
-	answer_vec.push_back(count);
+
+	return count;
 }
 
 int main()
 {
+	//Init
 	int n; cin >> n;
-	vector<vector<char>> map_vec(n,vector<char>(n,false));
-	vector<int> answer_vec;
+	char map[25][25];
+	vector<int> answers;
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < n; ++j)
 		{
-			cin >> map_vec[i][j];
+			cin >> map[i][j];
 		}
 	}
 
+	//Search
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < n; ++j)
 		{
-			if (map_vec[i][j] == '1')
+			if (map[i][j] == '1')
 			{
-				bfs(map_vec, answer_vec, i, j);
+				answers.emplace_back(BFS(map, i, j, n));
 			}
 		}
 	}
-	sort(answer_vec.begin(), answer_vec.end(), less<int>());
-	cout << answer_vec.size() << "\n";
-	for (int count : answer_vec) cout << count << "\n";
+
+	sort(answers.begin(), answers.end(), less<int>());
+
+	cout << answers.size() << "\n";
+	for (int answer : answers)
+	{
+		cout << answer << "\n";
+	}
+
 }
