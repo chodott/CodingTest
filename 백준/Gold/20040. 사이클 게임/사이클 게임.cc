@@ -2,40 +2,43 @@
 #include <vector>
 using namespace std;
 
-int getRoot(vector<int>& root_vec, int num)
+int findParrent(vector<int>& vec, int target)
 {
-	if (num == root_vec[num]) return num;
-	else return root_vec[num] = getRoot(root_vec, root_vec[num]);
-}
-
-bool bCanCycle(vector<int>& root_vec, int a, int b)
-{
-	int a_root = getRoot(root_vec, a);
-	int b_root = getRoot(root_vec, b);
-	if (a_root == b_root) return true;
-	else
+	if (target == vec[target])
 	{
-		root_vec[b_root] = a_root;
-		return false;
+		return target;
 	}
+
+	return vec[target] = findParrent(vec, vec[target]);
 }
 
 int main()
 {
-	int answer = 0;
-	int n, m;
-	cin >> n >> m;
-	vector<int> root_vec;
-	for (int i = 0; i < n; ++i) root_vec.emplace_back(i);
-
-	for (int i = 1; i <= m; ++i)
+	ios_base::sync_with_stdio(false);
+	int n, m; cin >> n >> m;
+	vector<int> parent_vec;
+	for (int i = 0; i <= n; ++i)
 	{
-		int a, b;
-		cin >> a >> b;
-		if (bCanCycle(root_vec, a, b) == true)
+		parent_vec.emplace_back(i);
+	}
+	int answer = 0;
+	
+	for(int i=0;i<m;++i)
+	{
+		int a, b; cin >> a >> b;
+		int parentA = findParrent(parent_vec, a);
+		int parentB = findParrent(parent_vec, b);
+		if (parentA == parentB && answer == 0)
 		{
-			answer = i;
-			break;
+			answer = i+1;
+		}
+		if (parentA < parentB)
+		{
+			parent_vec[parentB] = parentA;
+		}
+		else
+		{
+			parent_vec[parentA] = parentB;
 		}
 	}
 	cout << answer;
